@@ -56,24 +56,31 @@ body.clean .ui{display:none!important}
 button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 body.touch #seltools button{padding:9px 11px;font-size:14px;white-space:nowrap}
 body.touch .card:hover{transform:none}
+#tabs .mini{display:none}
 @media (max-width:800px){
-  #hud{top:8px;left:8px;padding:6px 10px;gap:8px}
-  #hud .t{font-size:13px} #hud .n{font-size:11px;padding:2px 8px} #hud .n b{font-size:13px}
-  #panel{top:auto;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));width:auto;height:auto}
-  #panel h2{display:none}
-  #tabs{padding:8px 8px 6px;flex-wrap:nowrap} #tabs button{padding:8px 2px;font-size:12.5px;white-space:nowrap}
-  #grid{flex:none;display:flex;overflow-x:auto;overflow-y:hidden;gap:6px;padding:2px 8px 8px;-webkit-overflow-scrolling:touch}
-  .card{flex:0 0 74px} .card .key{display:none} .card .nm{font-size:11.5px;white-space:nowrap}
-  #btns{grid-template-columns:1.15fr 1.15fr .8fr 1.15fr 1fr;padding:6px 8px;gap:4px}
-  #btns button{font-size:10.5px;padding:8px 0;white-space:nowrap;overflow:hidden} #btns button.wide{grid-column:auto}
-  #btns .pc{display:none}
-  #cam{top:58px;left:8px;width:auto;display:flex;padding:5px;gap:4px}
+  .pc{display:none}
+  #hud{top:8px;left:8px;padding:5px 8px;gap:6px;border-width:2px;border-radius:12px}
+  #hud .t{display:none} #hud .n{font-size:11px;padding:3px 8px;white-space:nowrap} #hud .n b{font-size:13px}
+  #cam{top:8px;left:auto;right:8px;width:auto;display:flex;padding:4px;gap:3px;border-width:2px;border-radius:12px}
   #cam .lb,#cam [data-c=rl],#cam [data-c=rr],#cam [data-c=in],#cam [data-c=out],#cam [data-c=left],#cam [data-c=right]{display:none}
-  #cam button{padding:7px 10px;font-size:12px;white-space:nowrap}
-  #mode{top:112px;left:8px;transform:none;font-size:12px;padding:6px 8px 6px 10px;gap:6px;max-width:calc(100vw - 16px);box-sizing:border-box}
+  #cam button{padding:6px 9px;font-size:12px;white-space:nowrap;border-radius:8px}
+  #panel{top:auto;left:6px;right:6px;bottom:calc(6px + env(safe-area-inset-bottom));width:auto;height:auto;border-width:2px;border-radius:14px}
+  #panel h2{display:none}
+  #tabs{padding:6px 6px 5px;flex-wrap:nowrap;gap:3px} #tabs button{padding:7px 2px;font-size:12px;white-space:nowrap;border-radius:8px}
+  #tabs .mini{display:block;flex:0 0 38px;background:#fff}
+  #grid{flex:none;display:flex;overflow-x:auto;overflow-y:hidden;gap:5px;padding:0 6px 6px;-webkit-overflow-scrolling:touch}
+  .card{flex:0 0 62px;padding:2px 1px 3px;border-radius:10px} .card .key{display:none} .card .nm{font-size:10.5px;white-space:nowrap}
+  .card .bd{font-size:8px;padding:0 4px}
+  #btns{display:none;grid-template-columns:1.1fr .8fr 1.1fr 1fr;padding:6px;gap:4px}
+  body.menu #btns{display:grid}
+  #btns button{font-size:11px;padding:8px 0;white-space:nowrap;overflow:hidden} #btns button.wide{grid-column:auto}
+  #btns #bUndo{display:none}
+  #mode{top:auto;bottom:calc(var(--ph,160px) + 2px);left:6px;transform:none;font-size:12px;padding:4px 5px 4px 10px;gap:8px;border-width:2px;border-radius:12px;max-width:calc(100vw - 12px);box-sizing:border-box}
+  #mode:not(.place){display:none}
   #mode button{padding:6px 10px}
-  #hint{transform:translateX(-50%);bottom:calc(var(--ph,230px) + 14px);font-size:11px;line-height:1.6;padding:5px 10px;width:max-content;max-width:calc(100vw - 16px)}
-  #toast{transform:translateX(-50%);top:160px;width:max-content;max-width:calc(100vw - 32px);font-size:13px;text-align:center}
+  #hint{transform:translateX(-50%);bottom:calc(var(--ph,160px) + 4px);font-size:11px;line-height:1.6;padding:4px 10px;width:max-content;max-width:calc(100vw - 12px);border-width:2px;border-radius:12px;pointer-events:none;opacity:.95}
+  body.used #hint{display:none}
+  #toast{transform:translateX(-50%);top:58px;width:max-content;max-width:calc(100vw - 32px);font-size:13px;text-align:center}
 }
 </style>
 </head>
@@ -110,7 +117,7 @@ body.touch .card:hover{transform:none}
   <button data-c="left" title="左へ移動">←</button>
   <button data-c="out" title="縮小">－</button>
   <button data-c="right" title="右へ移動">→</button>
-  <button data-c="walk" class="w3 on" id="bWalk">🐾 動物が歩く：ON</button>
+  <button data-c="walk" class="w3 on" id="bWalk">🐾<span class="pc"> 動物が歩く：</span>ON</button>
 </div>
 <div id="why" class="ui hidden"></div>
 <div id="hint" class="wood ui"></div>
@@ -823,6 +830,7 @@ function gestMove() {
 }
 canvas.addEventListener('pointerdown', ev => {
   if (ev.pointerType === 'touch') {
+    document.body.classList.add('used');
     pts.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
     if (pts.size === 2) { cancelStroke(); gest = gestState(); return; }
     if (pts.size > 2) return;
@@ -931,7 +939,7 @@ function camAction(a) {
   else if (a === 'rl' || a === 'rr') flyTo(t, sph.theta + (a === 'rl' ? -1 : 1) * Math.PI / 4, sph.phi, sph.radius);
   else if (a === 'in' || a === 'out') { camGoal = null; zoomAt = null; zoomGoal = THREE.MathUtils.clamp((zoomGoal ?? sph.radius) * (a === 'in' ? 0.65 : 1.5), controls.minDistance, controls.maxDistance); }
   else if (a === 'left' || a === 'right') { const r = new V3(Math.cos(sph.theta), 0, -Math.sin(sph.theta)).multiplyScalar((a === 'left' ? -1 : 1) * sph.radius * 0.3); flyTo(t.add(r), sph.theta, sph.phi, sph.radius); }
-  else if (a === 'walk') { walkOn = !walkOn; const b = document.getElementById('bWalk'); b.classList.toggle('on', walkOn); b.textContent = '🐾 動物が歩く：' + (walkOn ? 'ON' : 'OFF'); }
+  else if (a === 'walk') { walkOn = !walkOn; const b = document.getElementById('bWalk'); b.classList.toggle('on', walkOn); b.innerHTML = '🐾<span class="pc"> 動物が歩く：</span>' + (walkOn ? 'ON' : 'OFF'); }
   sfx.ui();
 }
 document.getElementById('cam').addEventListener('click', ev => { const b = ev.target.closest('button'); if (b) camAction(b.dataset.c); canvas.focus(); });
@@ -975,6 +983,13 @@ function updateHint() {
   const esc = TOUCH ? '' : ' (Esc)';
   modeEl.innerHTML = tool ? `🖐 <b>${tool.name}</b> を置くモード <button>✕ やめる${esc}</button>` : selected ? `👆 <b>${selected.item.name}</b> を選択中 <button>✕ 解除${esc}</button>` : `👀 見るモード ― ${isMob() ? '下' : '右'}の素材をえらぶと置けます`;
   const S = '<span class="sep">｜</span>';
+  if (TOUCH && isMob()) {
+    if (tool) modeEl.innerHTML = `🖐 <b>${tool.name}</b>：${tool.paint ? 'タップ／なぞって置く' : 'タップで置く'} <button>✕ やめる</button>`;
+    hintEl.classList.toggle('hidden', !!tool || !!selected);
+    hintEl.innerHTML = `下の素材をえらんで<b>タップ</b>${S}<b>1本指</b>で回す${S}<b>2本指</b>でズーム・移動`;
+    return;
+  }
+  hintEl.classList.remove('hidden');
   if (TOUCH) {
     hintEl.innerHTML = tool ? `<b>タップ</b>で置く${tool.paint ? '・<b>なぞる</b>と続けて置く' : '・<b>押したまま動かす</b>と位置を合わせられる'}${S}<b>2本指</b>で視点${S}緑＝置ける／赤＝置けない`
       : selected ? `<b>ドラッグ</b>で移動${S}上のボタンで回転・大きさ・複製・削除`
@@ -988,6 +1003,8 @@ function updateHint() {
 let curCat = CATS[0];
 const tabsEl = document.getElementById('tabs'), gridEl = document.getElementById('grid');
 CATS.forEach(c => { const b = document.createElement('button'); b.textContent = c; b.onclick = () => { curCat = c; renderCards(); sfx.ui(); }; tabsEl.appendChild(b); });
+{ const u = document.createElement('button'); u.className = 'mini'; u.textContent = '↶'; u.title = '元に戻す'; u.onclick = () => undo(); tabsEl.appendChild(u);
+  const m = document.createElement('button'); m.className = 'mini'; m.textContent = '⋯'; m.title = 'メニュー'; m.onclick = () => { document.body.classList.toggle('menu'); resize(); sfx.ui(); }; tabsEl.appendChild(m); }
 const thumbs = {};
 function renderCards() {
   tabsEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.textContent === curCat));
