@@ -1,0 +1,42 @@
+{
+ "turnip": {
+  "file": "turnip.glb",
+  "h": 0.85,
+  "y": -0.22
+ },
+ "carrot": {
+  "file": "carrot.glb"
+ },
+ "strawberry": {
+  "file": "strawberry.glb",
+  "h": 0.5
+ },
+ "cow": {
+  "file": "cow.glb"
+ },
+ "sheep": {
+  "file": "sheep.glb"
+ },
+ "chicken": {
+  "file": "chicken.glb"
+ },
+ "house": {
+  "file": "house.glb"
+ },
+ "coop": {
+  "file": "coop.glb"
+ },
+ "fence": {
+  "file": "fence.glb",
+  "fitW": 2.24
+ },
+ "crate": {
+  "file": "crate.glb"
+ },
+ "barrel": {
+  "file": "barrel.glb"
+ },
+ "sign": {
+  "file": "sign.glb"
+ }
+}
